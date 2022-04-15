@@ -1,0 +1,7 @@
+[main]
+url = 'http://voipmanager.zorra.com:8070/api/'
+login = '{your login}'
+password = '{your password}'
+ip = '{your ip}' ; can get from myip.ru
+
+
