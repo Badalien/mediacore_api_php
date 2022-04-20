@@ -1,9 +1,10 @@
 <?php
 // ini_set("display_errors",1);
-require('/mnt/d/code/work_scripts/mediacore_api/mediacore.php');
+require(__DIR__ . '/../mediacore.php');
 // require_once('/mnt/d/code/work/mediacore_api/functions.php');
 
-$mc = new MediaCore(11);
+$mc = new MediaCore();
+// add here IP addresses to add
 $new_lv_ip = '178.154.207.212';
 
 
@@ -15,7 +16,7 @@ function get_lv_points($mc) {
     $i = 0;
 
     foreach ($users as $user) {
-        $lv_users_points[] = get_op_details_by_id($mc, $user['id']);
+        $lv_users_points[] = get_op_details_by_client_id($mc, $user['id']);
     }
 
     // return $lv_users_points;
