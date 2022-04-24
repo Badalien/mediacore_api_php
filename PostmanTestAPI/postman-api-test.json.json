@@ -1,0 +1,226 @@
+{
+  "info": {
+    "_postman_id": "fff54311-9784-9899-d9da-3caf8c692a79",
+    "name": "zorra send single sms",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Zorra Login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "d6ab7334-d302-4ac5-94f3-ba086eec2e2b",
+            "exec": [
+              "var jsonData = JSON.parse(responseBody);\r",
+              "pm.collectionVariables.set(\"token\", jsonData.access_token);\r",
+              "\r",
+              "\r",
+              "pm.test('Status 200 OK', function() {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test('Got token', function() {\r",
+              "    pm.response.to.have.jsonBody('access_token');\r",
+              "});\r",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "_postman_id": "5f180e70-691d-a083-0497-9bbca1239f10",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "email",
+              "type": "text",
+              "value": "ZorraTelecom@zorra.com"
+            },
+            {
+              "key": "password",
+              "type": "text",
+              "value": "e9zEed4Ajj2ewBEx"
+            }
+          ],
+          "options": {
+            "formdata": {}
+          }
+        },
+        "url": "https://my.zorra.com/api/auth/login",
+        "description": "login by API to my.zorra.com"
+      },
+      "response": []
+    },
+    {
+      "name": "Zorra Send single SMS",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "3f51a183-e2bd-450c-a913-639117e7912b",
+            "exec": [
+              "var jsonData = JSON.parse(responseBody);\r",
+              "pm.collectionVariables.set(\"message_id\", jsonData.id);\r",
+              "\r",
+              "\r",
+              "pm.test('Status 200 OK', function() {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test('Sent success', function() {\r",
+              "    pm.expect(jsonData.success).to.equal(true);\r",
+              "});\r",
+              "\r",
+              "pm.test('Got message_id', function() {\r",
+              "    pm.response.to.have.jsonBody('mailing_id');\r",
+              "    pm.response.to.have.jsonBody('id');\r",
+              "})\r",
+              "\r",
+              "setTimeout(function(){}, 5000);"
+            ],
+            "type": "text/javascript"
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "id": "752fe038-8b74-4956-a389-5661a874de66",
+            "exec": [
+              "var moment = new Date().getTime();\r",
+              "pm.collectionVariables.set(\"time_to_sent\", moment);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "_postman_id": "af7eeeea-f2d8-f01a-b82e-29030b700620",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n   \"type\":\"sms\",\r\n   \"sender\":\"Zorra\",\r\n   \"body\":\"Hello, it's test sent at {{time_to_sent}}\",\r\n   \"recipient\":\"79612980584\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "https://my.zorra.com/api/v2/mailing/single/send",
+        "description": "send single sms to my.zorra.com"
+      },
+      "response": []
+    },
+    {
+      "name": "Single SMS state",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "083c952a-95fa-4bae-b6c1-6fca8c22a475",
+            "exec": [
+              "var jsonData = JSON.parse(responseBody);\r",
+              "\r",
+              "pm.test('Success Got result', function() {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test('Message delivered', function() {\r",
+              "    pm.expect(jsonData.state).to.equal('delivered');\r",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "_postman_id": "46b4dc48-f019-d356-3836-91463badc21e",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "https://my.zorra.com/api/v2/mailing/single/state/{{message_id}}"
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "id": "e305320a-5f7f-4313-912e-a51a9890d6fc",
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "id": "6a6e11c5-c9c2-4957-a78e-fcf6f0a376b4",
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "id": "77eeea03-de4e-4f59-af74-01676e26870f",
+      "key": "{{domain}}",
+      "value": "https://my.zorra.com",
+      "type": "string"
+    },
+    {
+      "id": "91acf073-0706-4fc8-9aa3-7d820cef54dc",
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "a78fa9cf-1471-4bfc-ad0a-643f30bc7f1c",
+      "key": "time_to_sent",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "id": "fc4a211b-9ad6-4849-9b62-1025949d589c",
+      "key": "message_id",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}
